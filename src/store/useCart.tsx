@@ -9,20 +9,66 @@ interface CartState {
     incrementItem: (uuid: number) => void;
 }
 
-const useCart = create((set) => ({
-
+const useCart = create<CartState>((set) => ({
+    // inital state
     cartItems: [],
+
+    //functions
     addCartItem: (item: Item) => {
-        set({
+        set((state) => ({
             cartItems: {
-            ..cartItems,
+                ...state.cartItems,
                 item
             }
-        })
+        }))
     },
-    removeCartItem: (item: Item) => {
-        set(state)
+    removeCartItem: (uuid: number) => {
+        set((state) => ({
+            cartItems: state.cartItems.filter((item) => item.uuid !== uuid)
+        }))
+    },
+    decrementItem: (uuid: number) => {
+        set((state) => decrement(state, uuid))
+    },
+    incrementItem: (uuid: number) => {
+
+        set((state) => increament(state, uuid))
     },
 }));
+
+const decrement = (state: CartState, uuid: Number) => {
+    const updateItem: Item | undefined = state.cartItems.find((item) => item.uuid !== uuid);
+    if (updateItem) {
+        updateItem.count = updateItem.count + 1
+        return ({
+            cartItems: {
+                ...state.cartItems,
+                updateItem
+            }
+        })
+    } else {
+        return ({
+            cartItems: { ...state.cartItems }
+        })
+    }
+}
+
+const increament = (state: CartState, uuid: Number) => {
+    const updateItem: Item | undefined = state.cartItems.find((item) => item.uuid !== uuid);
+    if (updateItem) {
+        updateItem.count = updateItem.count + 1
+        return ({
+            cartItems: {
+                ...state.cartItems,
+                updateItem
+            }
+        })
+    } else {
+        return ({
+            cartItems: { ...state.cartItems }
+        })
+    }
+
+}
 
 export default useCart;
